@@ -4,44 +4,37 @@ using UnityEngine;
 
 public class JunkCtrl : TrisMonoBehaviour
 {
-    [SerializeField] protected JunkSpawner junkSpawner;
-    public JunkSpawner JunkSpawner { get => junkSpawner; }
-
-    [SerializeField] protected JunkRandom junkRandom;
-    public JunkRandom JunkRandom { get => junkRandom; }
+    [SerializeField] protected Transform model;
+    public Transform Model { get => model; }
 
     [SerializeField] protected JunkDespawn junkDespawn;
-    public JunkDespawn JunkDespawn { get => junkDespawn; }
+    public JunkDespawn JunkDespawn { get=> junkDespawn; }
 
-    [SerializeField] protected SpawnPoints spawnPoints;
-    public SpawnPoints SpawnPoints { get => spawnPoints; }
-
+    [SerializeField] protected ShootableObject shootableObject;
+    public ShootableObject ShootableObject { get => shootableObject; }
     protected override void LoadComponents()
     {
         base.LoadComponents();
-        this.LoadJunkSpawner();
-        this.LoadJunkRandom();
+        this.LoadModel();
         this.LoadJunkDespawn();
-        this.LoadSpawnPoints();
-    }
-    protected virtual void LoadJunkSpawner()
+        this.LoadJunkSO();
+    }    
+    protected virtual void LoadModel()
     {
-        if (this.junkSpawner != null) return;
-        this.junkSpawner=GetComponent<JunkSpawner>();
-    }
-    protected virtual void LoadJunkRandom()
-    {
-        if (this.junkRandom != null) return;
-        this.junkRandom = GetComponent<JunkRandom>();
+        if (this.model != null) return;
+        this.model = transform.Find("Model");
+        Debug.Log(transform.name+": LoadModel",gameObject);
     }
     protected virtual void LoadJunkDespawn()
     {
-        if(this.junkDespawn != null) return;
-        this.junkDespawn = GetComponent<JunkDespawn>();
+        if (this.junkDespawn != null) return;
+        this.junkDespawn = transform.GetComponentInChildren<JunkDespawn>();
     }
-    protected virtual void LoadSpawnPoints()
+    protected virtual void LoadJunkSO()
     {
-        if(this.SpawnPoints != null) return;
-        this.spawnPoints = Transform.FindObjectOfType<SpawnPoints>();//su dung ham findObjectOfType vi no la object ngoai 
+        if(this.shootableObject != null) return;
+        string resPath = "ShootableObject/JunkSO/" + transform.name;
+        this.shootableObject = Resources.Load<ShootableObject>(resPath);
+        Debug.Log(transform.name+" LoadJunkSO"+resPath,gameObject);
     }
 }

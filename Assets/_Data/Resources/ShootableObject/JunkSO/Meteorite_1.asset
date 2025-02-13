@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bf3f47c706af934c9ca901f9606b361, type: 3}
+  m_Name: Meteorite_1
+  m_EditorClassIdentifier: 
+  objName: ShootableObject
+  objType: 1
+  hpMax: 4
+  dropList:
+  - itemSO: {fileID: 11400000, guid: b183deaa1a4a75f409f43665e0f27c98, type: 2}
+    dropRate: 100000
+  - itemSO: {fileID: 11400000, guid: b33de90ef2e021847869b069552e4c11, type: 2}
+    dropRate: 1000

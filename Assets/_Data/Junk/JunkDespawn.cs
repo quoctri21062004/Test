@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JunkDespawn : DespawnByDistance
 {
-    [SerializeField] protected JunkCtrl junkCtrl;
+    [SerializeField] protected JunkSpaawnerCtrl junkSpawnerCtrl;
     protected override void LoadComponents()
     {
         base.LoadComponents();
@@ -12,15 +12,15 @@ public class JunkDespawn : DespawnByDistance
     }
     protected virtual void LoadJunkCtrl()
     {
-        if (this.junkCtrl != null) return;
-        this.junkCtrl = GetComponent<JunkCtrl>();
+        if (this.junkSpawnerCtrl != null) return;
+        this.junkSpawnerCtrl = GetComponent<JunkSpaawnerCtrl>();
     }
     protected override void ResetValue()
     {
         base.ResetValue();
         this.disLimit = 15f;
     }
-    protected override void DespawnObject()
+    public override void DespawnObject()
     {
         JunkSpawner.Instance.Despawn(transform.parent);
         //junkCtrl.JunkSpawner.Despawn(transform.parent);

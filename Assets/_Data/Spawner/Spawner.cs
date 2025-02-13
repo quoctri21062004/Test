@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Spawner : TrisMonoBehaviour
+public class Spawner : TrisMonoBehaviour
 {
     [SerializeField] protected Transform holder; //GameObject nay chua cac prefabs duoc spawn hoac lay tu poolObject
                                                  //Giup de quan li cac prefabs de dang hon
     [SerializeField] protected List<Transform> prefabs;
     [SerializeField] protected List<Transform> poolObjs;
-
-
+    [SerializeField] protected int spawnedCount;
+    public int SpawnedCount => spawnedCount;
     protected override void LoadComponents()
     {
-        base.LoadComponents();
         this.LoadPrefabs();
         this.LoadHolder();
     }
@@ -47,23 +46,32 @@ public abstract class Spawner : TrisMonoBehaviour
             Debug.LogWarning("Prefab not found" + prefabName);
             return null;
         }
+        return this.Spawn(prefab, spawnPos, rotation);
+    }
+
+    public virtual Transform Spawn(Transform prefab, Vector3 spawnPos, Quaternion rotation)
+    {
         Transform newPrefab = this.GetObjectFromPool(prefab);
         newPrefab.SetPositionAndRotation(spawnPos, rotation);
 
         newPrefab.parent = this.holder;
+        this.spawnedCount++;
+
         return newPrefab;
     }
     protected virtual Transform GetObjectFromPool(Transform prefab)
     {
         foreach (Transform poolObj in this.poolObjs)
         {
+            if(poolObj == null)continue;
+
             if (poolObj.name == prefab.name)
             {
                 this.poolObjs.Remove(poolObj);
                 return poolObj;
             }
         }
-        Transform newPrefab= Instantiate(prefab);
+        Transform newPrefab = Instantiate(prefab);
         newPrefab.name = prefab.name;
         return newPrefab;
     }
@@ -71,6 +79,7 @@ public abstract class Spawner : TrisMonoBehaviour
     {
         this.poolObjs.Add(obj);
         obj.gameObject.SetActive(false);
+        this.spawnedCount--;
     }
     public virtual Transform GetPrefabName(string prefabName)
     {
@@ -79,5 +88,20 @@ public abstract class Spawner : TrisMonoBehaviour
             if (prefab.name == prefabName) return prefab;
         }
         return null;
+    }
+
+    public virtual Transform RandomPrefabs()
+    {
+        int rand = Random.Range(0, this.prefabs.Count);
+        return this.prefabs[rand];
+    }
+    public virtual void SetSpawnedCount(int count)
+    {
+        this.spawnedCount = count;
+    }
+
+    public virtual void Hold(Transform obj)
+    {
+        obj.parent = this.holder;
     }
 }

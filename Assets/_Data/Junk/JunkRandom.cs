@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class JunkRandom : TrisMonoBehaviour
 {
-    [SerializeField] protected JunkCtrl junkCtrl;
-
+    [SerializeField] protected JunkSpaawnerCtrl junkSpawnerCtrl;
+    [SerializeField] protected float randomDelay = 1f;
+    [SerializeField] protected float randomTimer = 0f;
+    [SerializeField] protected float randomLimit = 9f;
     protected override void LoadComponents()
     {
         base.LoadComponents();
@@ -13,22 +15,32 @@ public class JunkRandom : TrisMonoBehaviour
     }
     protected virtual void LoadJunkCtrl()
     {
-        if (this.junkCtrl != null) return;
-        this.junkCtrl=GetComponent<JunkCtrl>();
+        if (this.junkSpawnerCtrl != null) return;
+        this.junkSpawnerCtrl=GetComponent<JunkSpaawnerCtrl>();
     }
 
-    protected override void Start()
+    protected virtual void FixedUpdate()
     {
         this.JunkSpawning();
     }
     protected virtual void JunkSpawning()
     {
-        Transform randPos = this.junkCtrl.SpawnPoints.GetRandom();
+        if (RandomReachLimit()) return;
+        this.randomTimer += Time.fixedDeltaTime;
+        if (this.randomTimer < randomDelay) return;
+        this.randomTimer = 0f;
+
+        Transform randPos = this.junkSpawnerCtrl.SpawnPoints.GetRandom();
         Vector3 pos = randPos.position;
         Quaternion rot = transform.rotation;
-        Transform obj = this.junkCtrl.JunkSpawner.Spawn(JunkSpawner.meteoriteOne, pos, rot);
-        obj.gameObject.SetActive(true);
-        Invoke(nameof(this.JunkSpawning), 2f);
 
+        Transform prefab = this.junkSpawnerCtrl.JunkSpawner.RandomPrefabs();
+        Transform obj = this.junkSpawnerCtrl.JunkSpawner.Spawn(prefab, pos, rot);
+        obj.gameObject.SetActive(true);
+    }
+    protected virtual bool RandomReachLimit()
+    {
+        int currentJunk = this.junkSpawnerCtrl.JunkSpawner.SpawnedCount;
+        return currentJunk >=this.randomLimit;
     }
 }

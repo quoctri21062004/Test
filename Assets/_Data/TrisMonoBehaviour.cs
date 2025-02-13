@@ -26,4 +26,8 @@ public class TrisMonoBehaviour : MonoBehaviour
     {
         //
     }
+    protected virtual void OnEnable()
+    {
+        //
+    }
 }
